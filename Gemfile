@@ -1,11 +1,13 @@
 source 'https://rubygems.org'
 
+gem 'doorkeeper', '~> 0.4.2' 
 gem 'rails', '3.2.8'
 gem 'pg', :require => 'pg'
 gem 'json'
 gem 'devise', '2.1.2'
 #gem 'acl9'
 gem 'jquery-rails'
+gem 'oauth2'
 gem 'dpla_search_api_v1', :path => 'v1'
 gem 'tire'
 gem 'couchrest'
