@@ -33,7 +33,7 @@
   <h4>This is your access token:</h4>
   <p><code><%= current_user.api_key.secret_token %></code> Keep It secret.</p>
   <h4>Test it out in your favorite terminal:</h4>
-  <blockquote>curl -i http://20.dpla.berkman.temphost.net:9020/api/v1/search/?access_token=<%= current_user.api_key.secret_token %></blockquote>
+  <blockquote>curl -i <%= "#{request.protocol}#{request.env["SERVER_NAME"]}:#{request.env["SERVER_PORT"]}" %>/api/v1/items/?access_token=<%= current_user.api_key.secret_token %></blockquote>
   <div id="app-info">
     <h3>An API Client Application has been registered</h3>
     <h4>Application Id:</h4>
