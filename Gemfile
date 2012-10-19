@@ -23,7 +23,7 @@ end
 gem 'rspec-rails', :group => [:test, :development]
 
 group :test do
-  gem 'pry', :require => false
+  gem 'pry'#, :require => false
   gem 'rake'
   gem 'factory_girl_rails'
   gem 'database_cleaner'

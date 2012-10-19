@@ -31,5 +31,7 @@ Given /^there is a metadata record "(.*?)" with "(.*?)" in the "(.*?)" field$/ d
   dataset = JSON.parse(@json)
   grouped_dataset = dataset.group_by {|el| el["_id"]}
   expect(grouped_dataset.include?(arg1)).to be(true)
-  expect(grouped_dataset[arg1][arg2]).to eq(arg3)
+  expect(grouped_dataset[arg1].count).to be(1)
+  expect(grouped_dataset[arg1][0].values_at(arg3).count).to be(1)
+  expect(grouped_dataset[arg1][0].values_at(arg3).include?(arg2)).to be(true)
 end
