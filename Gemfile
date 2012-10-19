@@ -25,7 +25,6 @@ gem 'rspec-rails', :group => [:test, :development]
 group :test do
   gem 'pry', :require => false
   gem 'rake'
-  gem 'json_spec'
   gem 'factory_girl_rails'
   gem 'database_cleaner'
   gem 'cucumber-rails', :require => false
