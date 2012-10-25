@@ -2,10 +2,6 @@ Feature: Standard test dataset
   Background: 
     Given the dataset exists
 
-  Scenario: Invalid JSON dataset syntax
-    When I have invalid JSON in the standard test dataset 
-    Then I should get a dataset error
-  
   Scenario: Valid JSON dataset syntax
     When I have valid JSON in the test dataset
     Then I should not get a dataset error
