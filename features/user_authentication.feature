@@ -16,10 +16,9 @@ Feature: User Authentication
       Then I should see "Sign Up"
       But I should not see "Sign Out"
       When I follow "Sign Up"
-      And I fill in the following:
-        | Email    | mrtestuser1@somedomain.com |
-        | Password | testpass                   |
-        | Password confirmation | testpass      |
+      And I fill in the following signup information:
+        | Email    | Password           | Password confirmation    |
+        | mrtestuser@somedomain.com   | testpass | testpass |         
       And I press "Sign up"
       Then I should see "Sign Out"
    

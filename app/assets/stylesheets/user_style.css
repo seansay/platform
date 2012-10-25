@@ -1,0 +1,8 @@
+.spinner{
+display:inline;
+}
+
+#request_token_form button {
+ display:block;
+}
+
