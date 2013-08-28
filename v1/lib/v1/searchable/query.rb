@@ -8,7 +8,7 @@ module V1
 
     module Query
 
-      # not escaped, but probably could be: '&&', '||'
+      # not escaped, but probably could be if escape code was tweaked: '&&', '||'
       # not escaped, because they don't seem to need it: '+', '-',
       ESCAPED_METACHARACTERS = [ '"', '!', '(', ')', '{', '}', '[', ']', '^', '~', '?', ':',  ] #'\\'
 
