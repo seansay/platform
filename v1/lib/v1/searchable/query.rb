@@ -10,7 +10,7 @@ module V1
 
       # not escaped, but probably could be if escape code was tweaked: '&&', '||'
       # not escaped, because they don't seem to need it: '+', '-',
-      ESCAPED_METACHARACTERS = [ '"', '!', '(', ')', '{', '}', '[', ']', '^', '~', '?', ':',  ] #'\\'
+      ESCAPED_METACHARACTERS = [ '!', '(', ')', '{', '}', '[', ']', '^', '~', '?', ':',  ]  #'"', #'\\'
 
       def self.execute_empty_search(search)
         # We need to be explicit with an empty search
@@ -68,10 +68,11 @@ module V1
         puts "PROTECTING: #{string}"
         escaped_metacharacters.each do |mc|
           #          tmp.gsub!(mc, '\\' + mc.split('').join('\\\\\\') )
-          tmp.gsub!(mc, '\\\\' + mc)
+          tmp.gsub!(mc, '\\' + mc)
+          tmp.gsub!('"', '\\\\"')
         end
         
-        (quoted ? %Q("#{tmp}") : tmp).tap {|x| puts "RESUlTING:  #{x}"}
+        (quoted ? %Q("#{tmp}") : tmp).tap {|x| puts "RESULTING:  #{x}"}
       end
 
       def self.string_queries(resource, params)
