@@ -65,13 +65,13 @@ module V1
           tmp = $1
           quoted = true
         end
-
+        puts "PROTECTING: #{string}"
         escaped_metacharacters.each do |mc|
           #          tmp.gsub!(mc, '\\' + mc.split('').join('\\\\\\') )
           tmp.gsub!(mc, '\\' + mc)
         end
         
-        quoted ? %Q("#{tmp}") : tmp
+        (quoted ? %Q("#{tmp}") : tmp).tap {|x| puts "RESUlTING:  #{x}"}
       end
 
       def self.string_queries(resource, params)
