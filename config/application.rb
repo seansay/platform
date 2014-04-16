@@ -70,7 +70,16 @@ module Dpla
     config.generators do |g|
       g.test_framework :rspec
     end
-  
+
+    config.middleware.use Rack::Cors do
+      allow do
+        origins '*'
+        resource '/v2/*', :headers => :any, :methods => [:get]
+        resource '/items/*', :headers => :any, :methods => [:get]
+        resource '/collections/*', :headers => :any, :methods => [:get]
+      end
+    end
+
   end
 
 end

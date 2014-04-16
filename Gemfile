@@ -9,6 +9,7 @@ gem 'devise', '2.1.2'
 gem 'jquery-rails'
 gem 'dpla_search_api_v1', :path => 'v1'
 gem 'dpla_contentqa', :path => 'contentqa'
+gem 'rack-cors', :require => 'rack/cors'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
