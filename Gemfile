@@ -10,9 +10,10 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'dpla_search_api_v1', :path => 'v1'
 gem 'dpla_contentqa', :path => 'contentqa'
-gem 'daemons'
-gem 'jquery-tablesorter'
 gem 'delayed_job_active_record'
+
+# twitter-bootstrap-rails can have problems finding itself when it is in the assets group
+gem 'twitter-bootstrap-rails', '~> 2.2.8'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
@@ -22,8 +23,6 @@ group :assets do
   gem 'less-rails'
 end
 
-# twitter-bootstrap-rails can have problems finding itself when it is in the assets group
-gem 'twitter-bootstrap-rails', '~> 2.2.8'
 gem 'rspec-rails', :group => [:test, :development]
 
 group :test do
