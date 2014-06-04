@@ -5,6 +5,13 @@ module Contentqa
 
   class ReportingController < ApplicationController
     include ReportingHelper
+    rescue_from RestClient::ResourceNotFound, :with => :generic_exception_handler
+
+    def generic_exception_handler(exception)
+      logger.warn "#{self.class}.generic_exception_handler firing for: #{exception.class}: #{exception}"
+      logger.warn "#{exception.backtrace.first(15).join("\n")}\n[SNIP]"
+      render :text => "Unexpected error querying report views: #{exception.message}", :status => :error
+    end
 
     def index
       @providers = Reports.find_last_ingests

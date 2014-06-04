@@ -27,14 +27,14 @@ module Contentqa
 
     # Get the list of available reports (defined as the qa_reports views in the dpla database)
     def self.find_report_types(type=nil)
-      keys = @dpla_db.get('_design/qa_reports')['views'].keys
-      
+      keys = @dpla_db.get('_design/qa_reports')['views'].keys.sort
+
       if type == "provider"
-        keys.map{|k| k if k !~ /global/}.compact.sort
+        keys.select{|k| k !~ /global/}
       elsif type == "global"
-        keys.map{|k| k if k =~ /global/}.compact.sort
+        keys.select{|k| k =~ /global/}
       else
-        keys.sort
+        keys
       end
     end
 
