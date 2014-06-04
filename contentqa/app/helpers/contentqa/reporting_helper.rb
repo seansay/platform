@@ -15,11 +15,8 @@ module Contentqa
     end
 
     def report_link(report_file, generate_job, ingest_id, report_type)
-      if report_type == "all"
-        text = "Download All"
-      else
-        text = "Download"
-      end
+      text = report_type == "all" ? "Download All" : "Download"
+
       if report_file
         link_to text, {:controller => "reporting", :action => "download", :id => ingest_id, :report_type => report_type}
       elsif generate_job
@@ -28,42 +25,34 @@ module Contentqa
     end
 
     def disable_report_checkbox?(report_file)
-      not report_file or not report_file.instance_of?(String)
+      !report_file || !report_file.instance_of?(String)
     end
 
     def report_details(report_file, generate_job)
       if report_file        
-        number_to_human_size(report_file.size) + " - " + report_file.mtime.to_s if report_file 
+        number_to_human_size(report_file.size) + " - " + report_file.mtime.to_s
       elsif generate_job
         "Started on #{job_start(generate_job)}"
-     end
+      end
     end
 
     def error_link(ingest)
-      if not get_errors(ingest).empty?
+      if !get_errors(ingest).empty?
         return link_to "Errors", {:controller => "reporting", :action => "errors", :id => ingest['_id']}
       end
-
-      return nil
     end
 
     def get_errors(ingest)
-      errors = Hash.new
-      ingest.each do |k, v|
-        if k.end_with?("_process") and not v["error"].nil? and not v["error"].empty?
-          errors[k] = v["error"]
+      ingest.inject do |memo, (k,v)|
+        if k.end_with?("_process") && !v["error"].nil? && !v["error"].empty?
+          memo[k] = v["error"]
         end
+        memo
       end
-      return errors
     end
 
     def running?(ingest)
-      ingest.each do |k, v|
-        if k.end_with?("_process") and v["status"] == "running"
-          return true
-        end
-      end
-      return false
+      ingest.any? {|k, v| k.end_with?("_process") || v["status"] == "running"}
     end
 
     def report_page_link(ingest)
@@ -79,7 +68,8 @@ module Contentqa
     end
 
     def get_enrich_process(ingest)
-      enrich_process = ingest.to_hash.fetch('poll_storage_process', {})['status'].nil? ? 'enrich_process' : 'poll_storage_process'
+      status = ingest.to_hash.fetch('poll_storage_process', {})['status'].nil?
+      status ? 'enrich_process' : 'poll_storage_process'
     end
 
   end
