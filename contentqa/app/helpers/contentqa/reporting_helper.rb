@@ -43,16 +43,17 @@ module Contentqa
     end
 
     def get_errors(ingest)
-      ingest.inject do |memo, (k,v)|
+      errors = {}
+      ingest.each do |k, v|
         if k.end_with?("_process") && !v["error"].nil? && !v["error"].empty?
-          memo[k] = v["error"]
+          errors[k] = v["error"]
         end
-        memo
       end
+      errors
     end
 
     def running?(ingest)
-      ingest.any? {|k, v| k.end_with?("_process") || v["status"] == "running"}
+      ingest.any? {|k, v| k.end_with?("_process") && v["status"] == "running"}
     end
 
     def report_page_link(ingest)
