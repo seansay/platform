@@ -1,5 +1,5 @@
-require_dependency "contentqa/application_controller"
-require "contentqa/reports"
+#require_dependency "contentqa/application_controller"
+#require "contentqa/reports"
 
 module Contentqa
 
@@ -11,16 +11,16 @@ module Contentqa
     end
 
     def provider
-      @ingest = Reports.find_ingest params[:id]
-      @reports = Hash.new
-      Reports.find_report_types("provider").each do |type|
-        @reports[type] = {:file => Reports.get_report(@ingest['_id'], type),
-                          :job => Delayed::Job.find_by_queue("#{params[:id]}_#{type}")}
+      @ingest = find_ingest
+      @reports = Reports.find_report_types("provider").inject({}) do |memo, type|
+        memo[type] = {
+          :file => Reports.get_report(@ingest['_id'], type),
+          :job => Delayed::Job.find_by_queue("#{params[:id]}_#{type}")
+        }
+        memo
       end
       if Reports.all_created?(params[:id])
         @all_reports = Reports.get_zipped_reports(@ingest['_id'], @ingest['provider'])
-      else
-        @all_reports = false
       end
 
       respond_to do |format|
@@ -31,16 +31,16 @@ module Contentqa
 
     def global
       @global_reports_id = Reports.get_global_reports_id
-      @reports = Hash.new
-      Reports.find_report_types("global").each do |type|
-        @reports[type] = {:file => Reports.get_report(@global_reports_id, type),
-                          :job => Delayed::Job.find_by_queue("#{@global_reports_id}_#{type}")}
+      @reports = Reports.find_report_types("global").inject({}) do |memo, type|
+        memo[type] = {
+          :file => Reports.get_report(@global_reports_id, type),
+          :job => Delayed::Job.find_by_queue("#{@global_reports_id}_#{type}")
+        }
+        memo
       end
 
       if Reports.all_created?(params[:id])
         @all_reports = Reports.get_zipped_reports(@global_reports_id, "global")
-      else
-        @all_reports = false
       end
 
       respond_to do |format|
@@ -50,7 +50,7 @@ module Contentqa
     end
 
     def errors
-      @ingest = Reports.find_ingest params[:id]
+      @ingest = 
     end
 
     def create
@@ -67,7 +67,7 @@ module Contentqa
         if params[:id] =~ /global/
           filename = "global.zip"
         else
-          @ingest = Reports.find_ingest params[:id]
+          @ingest = find_ingest
           filename = "#{@ingest['provider']}.zip"
         end
       else
@@ -84,5 +84,8 @@ module Contentqa
       end
     end
 
+    def find_ingest
+      Reports.find_ingest params[:id]
+    end
   end
 end
