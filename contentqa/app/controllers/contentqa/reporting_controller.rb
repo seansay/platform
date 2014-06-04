@@ -78,7 +78,6 @@ module Contentqa
 
       if path
         send_file path, :type => type, :filename => filename
-        return
       else
         render status: :forbidden, text: "Access denied"
       end

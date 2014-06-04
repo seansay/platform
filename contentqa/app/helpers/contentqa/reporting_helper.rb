@@ -38,7 +38,7 @@ module Contentqa
 
     def error_link(ingest)
       if !get_errors(ingest).empty?
-        return link_to "Errors", {:controller => "reporting", :action => "errors", :id => ingest['_id']}
+        link_to "Errors", {:controller => "reporting", :action => "errors", :id => ingest['_id']}
       end
     end
 
