@@ -59,9 +59,10 @@ module Contentqa
     end
 
     def create
-      id = params[:id]
-      type = params[:report_type]
-      Reports.delay(:queue => "#{id}_#{type}").create_report(id, type)
+      Rails.logger.info "==================== #{params.inspect}"
+      #id = params[:id]
+      #type = params[:report_type]
+      #Reports.delay(:queue => "#{id}_#{type}").create_report(id, type)
       render nothing: true
     end
 

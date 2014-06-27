@@ -22,7 +22,7 @@ $(".error_link").bind("click", function() {
     $("#" + $(this).attr("id") + "_table").show();
 });
 
-// provider/gloabl page
+// provider/global page
 $('#check_all').on("click", function() {
     var checked = this.checked;
     $('input[name="reports[]"]:enabled').map(function() {
@@ -30,7 +30,7 @@ $('#check_all').on("click", function() {
     })
 });
 
-$('.generate_reports').on("click", function() {
+$('.ggenerate_reports').on("click", function() {
     var report_types = $('input[name="reports[]"]:checked').map(function() {
       return $(this).val();
     }).get();
@@ -43,6 +43,7 @@ $('.generate_reports').on("click", function() {
         var total = report_types.length;
         report_types.forEach(function(report_type) {
             $.ajax({
+                type: 'POST',
                 cache: false,
                 url: "/qa/reporting/create",
                 data: {id: ingest_id, report_type: report_type},
