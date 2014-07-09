@@ -30,41 +30,6 @@ $('#check_all').on("click", function() {
     })
 });
 
-$('.ggenerate_reports').on("click", function() {
-    var report_types = $('input[name="reports[]"]:checked').map(function() {
-      return $(this).val();
-    }).get();
-    if (report_types.length) {
-        $(this).prop("disabled", true);
-        $('#check_all').prop("disabled", true);
-        var ingest_id = $('#id').val();
-        var provider = $('#provider').val();
-        var count = 0;
-        var total = report_types.length;
-        report_types.forEach(function(report_type) {
-            $.ajax({
-                type: 'POST',
-                cache: false,
-                url: "/qa/reporting/create",
-                data: {id: ingest_id, report_type: report_type},
-                success: function() {
-                    console.log('success!');
-                    count++;
-                    $("." + report_type + "_link").html("Generating.");
-                    if (count == total) {
-                        var url = provider == "global" ? 'global' : 'provider';
-                        window.location.replace("/qa/reporting/" + url + "/?id=" + ingest_id);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log('ErrorStatus: ' + textStatus);
-                    console.log('ErrorThrown: ' + errorThrown);
-                }
-            });
-        });
-    }
-});
-
 if ($('.running').length) {
     setInterval(function() {
         var ingest_id = $('#id').val();
@@ -80,5 +45,5 @@ if ($('.running').length) {
             url: url,
             data: {id: ingest_id}
         });
-    }, 5000);
+    }, 10000);
 }
