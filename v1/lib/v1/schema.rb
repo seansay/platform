@@ -204,6 +204,13 @@ module V1
               'not_analyzed' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'script', 'facet' => true }
             }
           },
+          'intermediateProvider' => {
+            'type' => 'multi_field',
+            'fields' => {
+              'dataProvider' => { 'type' => 'string', 'sort' => 'multi_field' },
+              'not_analyzed' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'script', 'facet' => true }
+            }
+          },
           'hasView' => {
             'properties' => {
               '@id' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'field', 'facet' => true },

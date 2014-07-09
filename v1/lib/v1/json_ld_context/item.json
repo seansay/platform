@@ -21,7 +21,10 @@
       "@type": "dcmitype:Collection"
     },
     "extent": "dcterms:extent",
-    "temporal": "dcterms:temporal",
+    "temporal": {
+      "@id": "dcterms:temporal",
+      "@type": "edm:TimeSpan"
+    },
     "spatial": {
       "@id": "dcterms:spatial",
       "@type": "dpla:Place"
@@ -34,6 +37,9 @@
     "country": "dpla:country",
     "stateLocatedIn": "edm:currentLocation",
     "dataProvider": "edm:dataProvider",
+    "intermediateProvider": "dpla:intermediateProvider",
+    "edmRights": "edm:rights",
+
     "hasView": {
       "@id": "edm:hasView",
       "@type": "edm:WebResource"
@@ -74,7 +80,7 @@
     "object_status": null,
     "originalRecord": null,
     "score": null,
-    "specType": null,
+    "specType": "edm:hasType",
     "valid_after_enrich": null,
     "validation_message": null
   }
