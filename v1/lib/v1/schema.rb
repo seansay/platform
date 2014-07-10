@@ -204,18 +204,25 @@ module V1
               'not_analyzed' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'script', 'facet' => true }
             }
           },
-          'intermediateProvider' => {
-            'type' => 'multi_field',
-            'fields' => {
-              'dataProvider' => { 'type' => 'string', 'sort' => 'multi_field' },
-              'not_analyzed' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'script', 'facet' => true }
-            }
-          },
           'hasView' => {
             'properties' => {
               '@id' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'field', 'facet' => true },
               'format' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'script', 'facet' => true },
-              'rights' => { 'type' => 'string', 'index' => 'not_analyzed' }
+              'rights' => { 'type' => 'string', 'index' => 'not_analyzed' },
+              'edmRights' => { 
+                'type' => 'multi_field',
+                'fields' => {
+                  'edmRights' => { 'type' => 'string', 'sort' => 'multi_field' },
+                  'not_analyzed' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'script', 'facet' => true }
+                }
+              }
+            }
+          },
+          'intermediateProvider' => {
+            'type' => 'multi_field',
+            'fields' => {
+              'intermediateProvider' => { 'type' => 'string', 'sort' => 'multi_field' },
+              'not_analyzed' => { 'type' => 'string', 'index' => 'not_analyzed', 'sort' => 'script', 'facet' => true }
             }
           },
           'isPartOf' => {
@@ -244,6 +251,7 @@ module V1
               }                      
             }
           },
+          'rights' => { 'type' => 'string' },
           '@context' => { 'type' => 'object', 'enabled' => false },
           'originalRecord' => { 'type' => 'object', 'enabled' => false },
           'ingestType' => { 'enabled' => false },

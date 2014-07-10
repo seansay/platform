@@ -36,14 +36,13 @@
     "state": "dpla:state",
     "country": "dpla:country",
     "stateLocatedIn": "edm:currentLocation",
-    "dataProvider": "edm:dataProvider",
-    "intermediateProvider": "dpla:intermediateProvider",
+    "dataProvider": "edm:dataProvider",   
     "edmRights": "edm:rights",
-
     "hasView": {
       "@id": "edm:hasView",
       "@type": "edm:WebResource"
     },
+    "intermediateProvider": "dpla:intermediateProvider",
     "isShownAt": {
       "@id": "edm:isShownAt",
       "@type": "@id"
