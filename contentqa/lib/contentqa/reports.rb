@@ -126,7 +126,7 @@ module Contentqa
           provider = find_ingest(id)['provider']
           options = {:startkey => [provider, "0"], :endkey => [provider, "Z"]}
 
-          if is_group_view(view)
+          if is_group_view?(view)
             options[:group_level] = "2"
           else
             options[:reduce] = false
