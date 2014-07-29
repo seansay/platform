@@ -29,6 +29,11 @@ module Contentqa
     def self.find_report_types(type=nil)
       keys = @dpla_db.get('_design/qa_reports')['views'].keys.sort
 
+      keys = keys.inject([]) do |memo, type|
+        memo.push(type, type + '_count', type + '_count_global')
+        memo
+      end
+
       if type == "provider"
         keys.select{|k| k !~ /global/}
       elsif type == "global"
@@ -120,10 +125,12 @@ module Contentqa
         if view !~ /global/
           provider = find_ingest(id)['provider']
           options = {:startkey => [provider, "0"], :endkey => [provider, "Z"]}
-        end
 
-        if is_group_view?(view)
-          options[:group] = true
+          if is_group_view(view)
+            options[:group_level] = "2"
+          else
+            options[:reduce] = false
+          end
         end
 
         view_name = "qa_reports/#{view}"
