@@ -131,9 +131,13 @@ module Contentqa
           else
             options[:reduce] = false
           end
+        else
+          options[:group_level] = "2"
         end
 
-        view_name = "qa_reports/#{view}"
+        design_view = view.gsub(/_global$/,"").gsub(/_count$/,"")
+        view_name = "qa_reports/#{design_view}"
+        #return @dpla_db.view(view_name, options)
         File.open(download_path(path), "w") do |f|
           @dpla_db.view(view_name, options) {|row| f << csvify(filter(row)) }
         end
