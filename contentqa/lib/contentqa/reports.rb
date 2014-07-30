@@ -125,24 +125,23 @@ module Contentqa
         if view !~ /global/
           provider = find_ingest(id)['provider']
           options = {:startkey => [provider, "0"], :endkey => [provider, "Z"]}
+        end
 
-          if is_group_view?(view)
-            options[:group_level] = "2"
-          else
-            options[:reduce] = false
-          end
-        else
+        if is_group_view?(view)
           options[:group_level] = "2"
+        else
+          options[:reduce] = false
         end
 
         design_view = view.gsub(/_global$/,"").gsub(/_count$/,"")
         view_name = "qa_reports/#{design_view}"
-        #return @dpla_db.view(view_name, options)
+
         File.open(download_path(path), "w") do |f|
           @dpla_db.view(view_name, options) {|row| f << csvify(filter(row)) }
         end
         FileUtils.mv download_path(path), path
       end
+      return @dpla_db.view(view_name, options)
     end
 
     # Compress all files in a path
