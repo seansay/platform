@@ -96,9 +96,15 @@ module Contentqa
     end
 
     # Remove the provider from the row key if it's a compound key
-    def self.filter(row)
-      key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
-      {:key => key, :value => row['value']}
+    def self.filter(row, view)
+      if view =~ /count/
+        key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
+        {:key => key, :value => row['value']}
+      else
+        key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
+        value = row['key'].kind_of?(Array) ? row['key'][-2] : nil
+        {:key => key, :value => value}
+      end   
     end
     
     # Convert one line of a key/value JSON response pair into a line for a CSV file
@@ -137,11 +143,11 @@ module Contentqa
         view_name = "qa_reports/#{design_view}"
 
         File.open(download_path(path), "w") do |f|
-          @dpla_db.view(view_name, options) {|row| f << csvify(filter(row)) }
+          @dpla_db.view(view_name, options) {|row| f << csvify(filter(row, view)) }
         end
         FileUtils.mv download_path(path), path
       end
-      return @dpla_db.view(view_name, options)
+
     end
 
     # Compress all files in a path
