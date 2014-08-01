@@ -95,16 +95,16 @@ module Contentqa
       path if is_safe_path?(path)
     end
 
-    # Remove the provider from the row key if it's a compound key
     def self.filter(row, view)
       if view =~ /count/
+        # Remove the provider from the row key if it's a compound key
         key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
-        {:key => key, :value => row['value']}
+        value = row['value']
       else
-        key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
-        value = row['key'].kind_of?(Array) ? row['key'][-2] : nil
-        {:key => key, :value => value}
+        key = row['key'].last
+        value = row['key'][-2]
       end   
+      {:key => key, :value => value}
     end
     
     # Convert one line of a key/value JSON response pair into a line for a CSV file
@@ -130,7 +130,7 @@ module Contentqa
         options = {}
         if view !~ /global/
           provider = find_ingest(id)['provider']
-          options = {:startkey => [provider, "0"], :endkey => [provider, "Z"]}
+          options = {:startkey => [provider, "_"], :endkey => [provider, "Z"]}
         end
 
         if is_group_view?(view)
@@ -142,9 +142,30 @@ module Contentqa
         design_view = view.gsub(/_global$/,"").gsub(/_count$/,"")
         view_name = "qa_reports/#{design_view}"
 
-        File.open(download_path(path), "w") do |f|
-          @dpla_db.view(view_name, options) {|row| f << csvify(filter(row, view)) }
+        if view =~ /global/  #todo: change directory that file writes to
+          global_data = {}
+          global_data.default = 0
+
+          result = @dpla_db.view(view_name, options) 
+          result['rows'].each do |row|
+            key = row['key'].last
+            value = row['value'].to_i
+            global_data[key] += value
+          end  
+
+          File.open(download_path(path), "w") do |f|
+            global_data.each do |key, value| 
+              f << "\"#{key}\",\"#{value.to_s}\"\n"  
+            end
+          end
+
+        else  
+        
+          File.open(download_path(path), "w") do |f|
+            @dpla_db.view(view_name, options) {|row| f << csvify(filter(row, view)) }
+          end
         end
+        
         FileUtils.mv download_path(path), path
       end
 
