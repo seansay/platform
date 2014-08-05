@@ -12,11 +12,12 @@ module Contentqa
     def self.all_created?(id)
       path = File.expand_path(File.join(@base_path, id))
       count = Dir[File.join(path, '**', '*')].count {|file| File.file?(file) && !file.ends_with?(".zip") }
-      #TODO: Document these magic numbers
+      # TODO: Document these magic numbers and find a way to dynamically
+      # obtain counts from Couch
       if id =~ /global/
-        count == 26
+        count == 29 
       else
-        count == 52
+        count == 58
       end
     end
 
