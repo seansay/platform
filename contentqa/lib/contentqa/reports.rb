@@ -100,11 +100,12 @@ module Contentqa
         # Remove the provider from the row key if it's a compound key
         key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
         value = row['value']
+        {:key => key, :value => value}
       else
         key = row['key'].last
         value = row['key'][-2]
+        {:key => key, :value => value}
       end   
-      {:key => key, :value => value}
     end
     
     # Convert one line of a key/value JSON response pair into a line for a CSV file
