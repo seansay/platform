@@ -147,8 +147,7 @@ module Contentqa
           global_data = {}
           global_data.default = 0
 
-          result = @dpla_db.view(view_name, options) 
-          result['rows'].each do |row|
+          @dpla_db.view(view_name, options)['rows'].each do |row|
             key = row['key'].last
             value = row['value'].to_i
             global_data[key] += value
