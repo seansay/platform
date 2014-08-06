@@ -14,9 +14,9 @@ module Contentqa
       count = Dir[File.join(path, '**', '*')].count {|file| File.file?(file) && !file.ends_with?(".zip") }
       #TODO: Document these magic numbers
       if id =~ /global/
-        count == 26
+        count == find_report_types('global').length
       else
-        count == 52
+        count == find_report_types('provider').length
       end
     end
 
