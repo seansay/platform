@@ -143,7 +143,7 @@ module Contentqa
         design_view = view.gsub(/_global$/,"").gsub(/_count$/,"")
         view_name = "qa_reports/#{design_view}"
 
-        if view =~ /global/  #todo: change directory that file writes to
+        if view =~ /global/  
           global_data = {}
           global_data.default = 0
 
@@ -159,9 +159,7 @@ module Contentqa
               f << "\"#{key}\",\"#{value.to_s}\"\n"  
             end
           end
-
         else  
-        
           File.open(download_path(path), "w") do |f|
             @dpla_db.view(view_name, options) {|row| f << csvify(filter(row, view)) }
           end
