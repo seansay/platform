@@ -12,7 +12,7 @@ module Contentqa
     def self.all_created?(id)
       path = File.expand_path(File.join(@base_path, id))
       count = Dir[File.join(path, '**', '*')].count {|file| File.file?(file) && !file.ends_with?(".zip") }
-      #TODO: Document these magic numbers
+      
       if id =~ /global/
         count == find_report_types('global').length
       else
@@ -95,22 +95,42 @@ module Contentqa
       path if is_safe_path?(path)
     end
 
-    def self.filter(row, view)
-      if view =~ /count/
-        # Remove the provider from the row key if it's a compound key
-        key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
-        value = row['value']
-        {:key => key, :value => value}
-      else
-        key = row['key'].last
-        value = row['key'][-2]
-        {:key => key, :value => value}
-      end   
+    # Filter dpla_db request result for provider report
+    def self.filter(result, view)
+      provider_result = {}
+
+      result['rows'].each do |row|
+        if is_group_view?(view)
+          # Remove the provider from the row key if it's a compound key
+          key = row['key'].kind_of?(Array) ? row['key'].last : row['key']
+          value = row['value']
+          provider_result[key] = value 
+        else
+          key = row['key'].last
+          value = row['key'][-2]
+          provider_result[key] = value 
+        end   
+      end
+      provider_result
     end
-    
-    # Convert one line of a key/value JSON response pair into a line for a CSV file
-    def self.csvify(row)
-      "\"#{row[:key]}\",\"#{row[:value]}\"\n"
+
+    # Aggregate dpla_db request result for global report
+    def self.aggregate(result) 
+      global_result = {}
+      global_result.default = 0
+
+      result['rows'].each do |row|
+        key = row['key'].last
+        value = row['value'].to_i
+        global_result[key] += value
+      end
+
+      global_result
+    end
+
+    # Convert one key/value JSON response pair into a line for a CSV file
+    def self.csvify(key, value)
+      "\"#{key}\",\"#{value.to_s}\"\n"
     end
 
     # Temporary file location while downloading
@@ -122,45 +142,21 @@ module Contentqa
       view_name =~ /_count/
     end
 
+    def self.is_global_view?(view_name)
+      view_name =~ /_global/
+    end
+
     # Create a report
     def self.create_report(id, view)
       path = report_path id, view
       if path 
         FileUtils.mkpath File.dirname(path) unless File.exists? File.dirname(path)
 
-        options = {}
-        if view !~ /global/
-          provider = find_ingest(id)['provider']
-          options = {:startkey => [provider, "_"], :endkey => [provider, "Z"]}
-        end
-
-        if is_group_view?(view)
-          options[:group_level] = "2"
-        else
-          options[:reduce] = false
-        end
-
-        design_view = view.gsub(/_global$/,"").gsub(/_count$/,"")
-        view_name = "qa_reports/#{design_view}"
-
-        if view =~ /global/  
-          global_data = {}
-          global_data.default = 0
-
-          @dpla_db.view(view_name, options)['rows'].each do |row|
-            key = row['key'].last
-            value = row['value'].to_i
-            global_data[key] += value
-          end  
-
-          File.open(download_path(path), "w") do |f|
-            global_data.each do |key, value| 
-              f << "\"#{key}\",\"#{value.to_s}\"\n"  
-            end
-          end
-        else  
-          File.open(download_path(path), "w") do |f|
-            @dpla_db.view(view_name, options) {|row| f << csvify(filter(row, view)) }
+        result = request_result(id, view)
+ 
+        File.open(download_path(path), "w") do |f|
+          result.each do |key, value| 
+            f << csvify(key, value)  
           end
         end
         
@@ -191,7 +187,42 @@ module Contentqa
     def self.ingestion_running?
       @dashboard_db.view("all_ingestion_docs/for_active_ingestions")["total_rows"] > 0
     end
+
+    # Returns a hash of options for a @dpla_db.view request
+    def self.request_options(id, view)
+      options = {}
+      if !is_global_view?(view)
+        provider = find_ingest(id)['provider']
+        options = {:startkey => [provider, "_"], :endkey => [provider, "Z"]}
+      end
+
+      if is_group_view?(view)
+        options[:group_level] = "2"
+      else
+        options[:reduce] = false
+      end
+
+      options
+    end
+
+    # Returns a qa report view name for a @dpla_db.view request
+    def self.request_view_name(view)
+      design_view = view.gsub(/_global$/,"").gsub(/_count$/,"")
+      "qa_reports/#{design_view}"
+    end
     
+    def self.request_result(id, view)
+      view_name = request_view_name(view)
+      options = request_options(id, view)
+      result = @dpla_db.view(view_name, options)
+
+      if is_global_view?(view)
+        aggregate(result)
+      else
+        filter(result, view)
+      end
+    end
+
   end
 
 end
