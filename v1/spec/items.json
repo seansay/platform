@@ -1,5 +1,17 @@
 [
     {
+        "_id": "item-meta1",
+        "id": "item-meta1",
+        "ingestType": "item",
+        "sourceResource": {
+            "title": "2 x 4 pieces of wood are actually 1 1/2\" by 3 1/2\" after milling",
+            "date": {
+                "begin": null,
+                "end": null
+            }
+        }
+    },
+    {
         "_id": "1",
         "id": "1",
         "ingestType": "item",
