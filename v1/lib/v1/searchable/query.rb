@@ -65,7 +65,7 @@ module V1
           tmp = $1
           quoted = true
         end
-
+        puts "PROTECTING: #{string}"
         escaped_metacharacters.each do |mc|
           # Try: tmp.gsub!(/(?=#{mc})/, '\\') #=> Foo\ Bar\!
           tmp.gsub!(mc, '\\' + mc)
@@ -74,11 +74,11 @@ module V1
         # How do we handle this query: '"Toast" AND "Bread Trucks"'
         # and also handle: '1 and 3/8" boards'
         if tmp.count('"') % 2 == 1
-          tmp.gsub!(/"/, '\\"')
-          tmp.gsub!(/\\{2,}"/, '\\"')
+          tmp.gsub!(/"/, '\\\\"')
+          tmp.gsub!(/\\{2,}"/, '\\\\"')
         end
         
-        quoted ? %Q("#{tmp}") : tmp
+        (quoted ? %Q("#{tmp}") : tmp).tap {|x| puts "RESULTING:  #{x}"}
       end
 
       def self.string_queries(resource, params)
