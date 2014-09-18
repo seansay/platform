@@ -65,7 +65,7 @@ module V1
           tmp = $1
           quoted = true
         end
-        puts "PROTECTING: #{string}"
+        puts "PROTECTING [#{quoted ? '' : 'not'} quoted]: #{tmp}"
         escaped_metacharacters.each do |mc|
           # Try: tmp.gsub!(/(?=#{mc})/, '\\') #=> Foo\ Bar\!
           tmp.gsub!(mc, '\\' + mc)
